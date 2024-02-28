@@ -4,6 +4,9 @@ import cors from "cors";
 import express from "express";
 import { createServer } from "http";
 import { serverConfig } from "./config/";
+import ConnectDB from "./db/";
+
+ConnectDB();
 
 const app = express();
 const httpServer = createServer(app);
