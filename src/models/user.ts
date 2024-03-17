@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 export interface IUser {
+  _id: mongoose.Types.ObjectId;
   email: string;
   password: string;
   name: string;

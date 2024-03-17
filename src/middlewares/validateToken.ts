@@ -1,4 +1,10 @@
 import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { IUser } from "models/user";
+
+interface CustomRequest extends Request {
+  user: IUser;
+}
 
 /**
  * Middleware function to validate the authorization token.
@@ -8,7 +14,11 @@ import { Request, Response, NextFunction } from "express";
  * @returns A response indicating whether the token is valid or not.
  */
 
-const validateToken = (req: Request, res: Response, next: NextFunction) => {
+const validateToken = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const token = req.headers["authorization"];
 
   if (!token) {
@@ -24,6 +34,10 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
   if (!tokenArray[1]) {
     return res.status(401).json({ error: "No token provided" });
   }
+
+  const user = jwt.verify(tokenArray[1], process.env.JWT_SECRET) as IUser;
+
+  req.user = user;
 
   next();
 };

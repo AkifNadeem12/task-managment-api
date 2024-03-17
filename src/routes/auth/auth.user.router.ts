@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import express from "express";
-import validateFields from "../../middlewares/validateFields";
-import User from "../../models/user";
 import jwt from "jsonwebtoken";
+import validateFields from "middlewares/validateFields";
+import User from "models/user";
 
 const router = express.Router();
 
@@ -24,13 +24,16 @@ router.post(
       return res.status(401).json({ error: "Invalid password" });
     }
 
-    delete user.password;
-
     const token = jwt.sign({ user }, process.env.JWT_SECRET);
 
-    return res
-      .status(200)
-      .json({ user, message: "User logged in successfully", token });
+    const userObject = user.toObject();
+    delete userObject.password;
+
+    return res.status(200).json({
+      user: userObject,
+      message: "User logged in successfully",
+      token,
+    });
   }
 );
 
